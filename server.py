@@ -7,4 +7,4 @@ def home(file):
     return send_file(file)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()

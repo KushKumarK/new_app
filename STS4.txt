@@ -1,0 +1,396 @@
+// Activity Selection Problem
+import java.io.*;
+import java.lang.*;
+import java.util.*;
+
+class ActivitySelection {
+	// Prints a maximum set of activities that can be done
+	// by a single person, one at a time.
+	public static void printMaxActivities(int s[], int f[],
+										int n)
+	{
+		int i, j;
+
+		System.out.println(
+			"Following activities are selected");
+
+		// The first activity always gets selected
+		i = 0;
+		System.out.print(i + " ");
+
+		// Consider rest of the activities
+		for (j = 1; j < n; j++) {
+			// If this activity has start time greater than
+			// or equal to the finish time of previously
+			// selected activity, then select it
+			if (s[j] >= f[i]) {
+				System.out.print(j + " ");
+				i = j;
+			}
+		}
+	}
+
+	// Driver code
+	public static void main(String[] args)
+	{
+		int s[] = { 1, 3, 0, 5, 8, 5 };
+		int f[] = { 2, 4, 6, 7, 9, 9 };
+		int n = s.length;
+
+		// Function call
+		printMaxActivities(s, f, n);
+	}
+}
+
+
+// Combinations
+import java.util.*;
+public class Main
+{
+    static Vector<Vector<Integer>> ans = new Vector<Vector<Integer>>();
+    static Vector<Integer> tmp = new Vector<Integer>();
+
+    static void makeCombiUtil(int n, int left, int k)
+    {
+
+        // Pushing this vector to a vector of vector
+        if (k == 0) {
+            ans.add(tmp);
+            for(int i = 0; i < tmp.size(); i++)
+            {
+                System.out.print(tmp.get(i) + " ");
+            }
+            System.out.println();
+            return;
+        }
+
+        // i iterates from left to n. First time
+        // left will be 1
+        for (int i = left; i <= n; ++i)
+        {
+            tmp.add(i);
+            makeCombiUtil(n, i + 1, k - 1);
+
+            // Popping out last inserted element
+            // from the vector
+            tmp.remove(tmp.size() - 1);
+        }
+    }
+
+    // Prints all combinations of size k of numbers
+    // from 1 to n.
+    static Vector<Vector<Integer>> makeCombi(int n, int k)
+    {
+        makeCombiUtil(n, 1, k);
+        return ans;
+    }
+
+    public static void main(String[] args)
+    {
+
+        // given number
+        int n = 5;
+        int k = 3;
+        ans = makeCombi(n, k);
+    }
+}
+
+// Graph Coloring
+// A Java program to implement greedy algorithm for graph coloring
+import java.io.*;
+import java.util.*;
+import java.util.LinkedList;
+
+// This class represents an undirected graph using adjacency list
+class Graph
+{
+	private int V; // No. of vertices
+	private LinkedList<Integer> adj[]; //Adjacency List
+
+	//Constructor
+	Graph(int v)
+	{
+		V = v;
+		adj = new LinkedList[v];
+		for (int i=0; i<v; ++i)
+			adj[i] = new LinkedList();
+	}
+
+	//Function to add an edge into the graph
+	void addEdge(int v,int w)
+	{
+		adj[v].add(w);
+		adj[w].add(v); //Graph is undirected
+	}
+
+	// Assigns colors (starting from 0) to all vertices and
+	// prints the assignment of colors
+	void greedyColoring()
+	{
+		int result[] = new int[V];
+
+		// Initialize all vertices as unassigned
+		Arrays.fill(result, -1);
+
+		// Assign the first color to first vertex
+		result[0] = 0;
+
+		// A temporary array to store the available colors. False
+		// value of available[cr] would mean that the color cr is
+		// assigned to one of its adjacent vertices
+		boolean available[] = new boolean[V];
+
+		// Initially, all colors are available
+		Arrays.fill(available, true);
+
+		// Assign colors to remaining V-1 vertices
+		for (int u = 1; u < V; u++)
+		{
+			// Process all adjacent vertices and flag their colors
+			// as unavailable
+			Iterator<Integer> it = adj[u].iterator() ;
+			while (it.hasNext())
+			{
+				int i = it.next();
+				if (result[i] != -1)
+					available[result[i]] = false;
+			}
+
+			// Find the first available color
+			int cr;
+			for (cr = 0; cr < V; cr++){
+				if (available[cr])
+					break;
+			}
+
+			result[u] = cr; // Assign the found color
+
+			// Reset the values back to true for the next iteration
+			Arrays.fill(available, true);
+		}
+
+		// print the result
+		for (int u = 0; u < V; u++)
+			System.out.println("Vertex " + u + " ---> Color "
+								+ result[u]);
+	}
+
+	// Driver method
+	public static void main(String args[])
+	{
+		Graph g1 = new Graph(5);
+		g1.addEdge(0, 1);
+		g1.addEdge(0, 2);
+		g1.addEdge(1, 2);
+		g1.addEdge(1, 3);
+		g1.addEdge(2, 3);
+		g1.addEdge(3, 4);
+		System.out.println("Coloring of graph 1");
+		g1.greedyColoring();
+
+		System.out.println();
+		Graph g2 = new Graph(5);
+		g2.addEdge(0, 1);
+		g2.addEdge(0, 2);
+		g2.addEdge(1, 2);
+		g2.addEdge(1, 4);
+		g2.addEdge(2, 4);
+		g2.addEdge(4, 3);
+		System.out.println("Coloring of graph 2 ");
+		g2.greedyColoring();
+	}
+}
+
+// Hamiltonian Cycle
+class HamiltonianCycle
+{
+	final int V = 5;
+	int path[];
+
+	/* A utility function to check if the vertex v can be
+	added at index 'pos'in the Hamiltonian Cycle
+	constructed so far (stored in 'path[]') */
+	boolean isSafe(int v, int graph[][], int path[], int pos)
+	{
+		/* Check if this vertex is an adjacent vertex of
+		the previously added vertex. */
+		if (graph[path[pos - 1]][v] == 0)
+			return false;
+
+		/* Check if the vertex has already been included.
+		This step can be optimized by creating an array
+		of size V */
+		for (int i = 0; i < pos; i++)
+			if (path[i] == v)
+				return false;
+
+		return true;
+	}
+
+	/* A recursive utility function to solve hamiltonian
+	cycle problem */
+	boolean hamCycleUtil(int graph[][], int path[], int pos)
+	{
+		/* base case: If all vertices are included in
+		Hamiltonian Cycle */
+		if (pos == V)
+		{
+			// And if there is an edge from the last included
+			// vertex to the first vertex
+			if (graph[path[pos - 1]][path[0]] == 1)
+				return true;
+			else
+				return false;
+		}
+
+		// Try different vertices as a next candidate in
+		// Hamiltonian Cycle. We don't try for 0 as we
+		// included 0 as starting point in hamCycle()
+		for (int v = 1; v < V; v++)
+		{
+			/* Check if this vertex can be added to Hamiltonian
+			Cycle */
+			if (isSafe(v, graph, path, pos))
+			{
+				path[pos] = v;
+
+				/* recur to construct rest of the path */
+				if (hamCycleUtil(graph, path, pos + 1) == true)
+					return true;
+
+				/* If adding vertex v doesn't lead to a solution,
+				then remove it */
+				path[pos] = -1;
+			}
+		}
+
+		/* If no vertex can be added to Hamiltonian Cycle
+		constructed so far, then return false */
+		return false;
+	}
+
+	/* This function solves the Hamiltonian Cycle problem using
+	Backtracking. It mainly uses hamCycleUtil() to solve the
+	problem. It returns false if there is no Hamiltonian Cycle
+	possible, otherwise return true and prints the path.
+	Please note that there may be more than one solutions,
+	this function prints one of the feasible solutions. */
+	int hamCycle(int graph[][])
+	{
+		path = new int[V];
+		for (int i = 0; i < V; i++)
+			path[i] = -1;
+
+		/* Let us put vertex 0 as the first vertex in the path.
+		If there is a Hamiltonian Cycle, then the path can be
+		started from any point of the cycle as the graph is
+		undirected */
+		path[0] = 0;
+		if (hamCycleUtil(graph, path, 1) == false)
+		{
+			System.out.println("\nSolution does not exist");
+			return 0;
+		}
+
+		printSolution(path);
+		return 1;
+	}
+
+	/* A utility function to print solution */
+	void printSolution(int path[])
+	{
+		System.out.println("Solution Exists: Following" +
+						" is one Hamiltonian Cycle");
+		for (int i = 0; i < V; i++)
+			System.out.print(" " + path[i] + " ");
+
+		// Let us print the first vertex again to show the
+		// complete cycle
+		System.out.println(" " + path[0] + " ");
+	}
+
+	// driver program to test above function
+	public static void main(String args[])
+	{
+		HamiltonianCycle hamiltonian =
+								new HamiltonianCycle();
+		/* Let us create the following graph
+		(0)--(1)--(2)
+			| / \ |
+			| / \ |
+			| /	 \ |
+		(3)-------(4) */
+		int graph1[][] = {{0, 1, 0, 1, 0},
+			{1, 0, 1, 1, 1},
+			{0, 1, 0, 0, 1},
+			{1, 1, 0, 0, 1},
+			{0, 1, 1, 1, 0},
+		};
+
+		// Print the solution
+		hamiltonian.hamCycle(graph1);
+
+		/* Let us create the following graph
+		(0)--(1)--(2)
+			| / \ |
+			| / \ |
+			| /	 \ |
+		(3)	 (4) */
+		int graph2[][] = {{0, 1, 0, 1, 0},
+			{1, 0, 1, 1, 1},
+			{0, 1, 0, 0, 1},
+			{1, 1, 0, 0, 0},
+			{0, 1, 1, 0, 0},
+		};
+
+		// Print the solution
+		hamiltonian.hamCycle(graph2);
+	}
+}
+
+// Josephus Problem
+import java.util.*;
+
+class GFG{
+
+
+static void Josh(List<Integer> person, int k, int index)
+{
+
+	// Base case , when only one person is left
+	if (person.size() == 1) {
+	System.out.println(person.get(0));
+	return;
+	}
+
+	// find the index of first person which will die
+	index = ((index + k) % person.size());
+
+	// remove the first person which is going to be killed
+	person.remove(index);
+
+	// recursive call for n-1 persons
+	Josh(person, k, index);
+}
+
+// Driver code
+public static void main(String [] args)
+{
+	int n = 14; // specific n and k values for original
+	// josephus problem
+	int k = 2;
+	k--; // (k-1)th person will be killed
+	int index
+	= 0; // The index where the person which will die
+
+	List<Integer> person = new ArrayList<>();
+
+	// fill the person vector
+	for (int i = 1; i <= n; i++) {
+	person.add(i);
+	}
+
+	Josh(person, k, index);
+}
+}
+

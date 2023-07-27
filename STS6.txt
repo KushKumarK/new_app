@@ -1,0 +1,377 @@
+// N-Queens Problem
+
+public class NQueenProblem {
+	final int N = 4;
+
+	// A utility function to print solution
+	void printSolution(int board[][])
+	{
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) {
+				if (board[i][j] == 1)
+					System.out.print("Q ");
+				else
+					System.out.print(". ");
+			}
+			System.out.println();
+		}
+	}
+
+	// A utility function to check if a queen can
+	// be placed on board[row][col]. Note that this
+	// function is called when "col" queens are already
+	// placeed in columns from 0 to col -1. So we need
+	// to check only left side for attacking queens
+	boolean isSafe(int board[][], int row, int col)
+	{
+		int i, j;
+
+		// Check this row on left side
+		for (i = 0; i < col; i++)
+			if (board[row][i] == 1)
+				return false;
+
+		// Check upper diagonal on left side
+		for (i = row, j = col; i >= 0 && j >= 0; i--, j--)
+			if (board[i][j] == 1)
+				return false;
+
+		// Check lower diagonal on left side
+		for (i = row, j = col; j >= 0 && i < N; i++, j--)
+			if (board[i][j] == 1)
+				return false;
+
+		return true;
+	}
+
+	// A recursive utility function to solve N
+	// Queen problem
+	boolean solveNQUtil(int board[][], int col)
+	{
+		// Base case: If all queens are placed
+		// then return true
+		if (col >= N)
+			return true;
+
+		// Consider this column and try placing
+		// this queen in all rows one by one
+		for (int i = 0; i < N; i++) {
+
+			// Check if the queen can be placed on
+			// board[i][col]
+			if (isSafe(board, i, col)) {
+
+				// Place this queen in board[i][col]
+				board[i][col] = 1;
+
+				// Recur to place rest of the queens
+				if (solveNQUtil(board, col + 1) == true)
+					return true;
+
+				// If placing queen in board[i][col]
+				// doesn't lead to a solution then
+				// remove queen from board[i][col]
+				board[i][col] = 0; // BACKTRACK
+			}
+		}
+
+		// If the queen can not be placed in any row in
+		// this column col, then return false
+		return false;
+	}
+
+	// This function solves the N Queen problem using
+	// Backtracking. It mainly uses solveNQUtil () to
+	// solve the problem. It returns false if queens
+	// cannot be placed, otherwise, return true and
+	// prints placement of queens in the form of 1s.
+	// Please note that there may be more than one
+	// solutions, this function prints one of the
+	// feasible solutions.
+	boolean solveNQ()
+	{
+		int board[][] = { { 0, 0, 0, 0 },
+						{ 0, 0, 0, 0 },
+						{ 0, 0, 0, 0 },
+						{ 0, 0, 0, 0 } };
+
+		if (solveNQUtil(board, 0) == false) {
+			System.out.print("Solution does not exist");
+			return false;
+		}
+
+		printSolution(board);
+		return true;
+	}
+
+	// Driver program to test above function
+	public static void main(String args[])
+	{
+		NQueenProblem Queen = new NQueenProblem();
+		Queen.solveNQ();
+	}
+}
+
+// Natural Sort Order Algorithm
+// Java program to demonstrate
+// Comparator.naturalOrder() method
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+
+public class GFG {
+	public static void main(String... args)
+	{
+
+		List<Integer> values
+			= Arrays.asList(212, 324,
+							435, 566,
+							133, 100, 121);
+
+		// naturalOrder is a static method
+		values.sort(Comparator.naturalOrder());
+
+		// print sorted number based on natural order
+		System.out.println(values);
+	}
+}
+
+// Quick Select
+import java.util.Arrays;
+
+class GFG {
+	public static int partition(int[] arr, int low,
+								int high)
+	{
+		int pivot = arr[high], pivotloc = low;
+		for (int i = low; i <= high; i++) {
+			// inserting elements of less value
+			// to the left of the pivot location
+			if (arr[i] < pivot) {
+				int temp = arr[i];
+				arr[i] = arr[pivotloc];
+				arr[pivotloc] = temp;
+				pivotloc++;
+			}
+		}
+
+		// swapping pivot to the final pivot location
+		int temp = arr[high];
+		arr[high] = arr[pivotloc];
+		arr[pivotloc] = temp;
+
+		return pivotloc;
+	}
+	public static int kthSmallest(int[] arr, int low,
+								int high, int k)
+	{
+		// find the partition
+		int partition = partition(arr, low, high);
+
+		// if partition value is equal to the kth position,
+		// return value at k.
+		if (partition == k - 1)
+			return arr[partition];
+
+		// if partition value is less than kth position,
+		// search right side of the array.
+		else if (partition < k - 1)
+			return kthSmallest(arr, partition + 1, high, k);
+
+		// if partition value is more than kth position,
+		// search left side of the array.
+		else
+			return kthSmallest(arr, low, partition - 1, k);
+	}
+
+	// Driver Code
+	public static void main(String[] args)
+	{
+		int[] array = new int[] { 10, 4, 5, 8, 6, 11, 26 };
+		int[] arraycopy
+			= new int[] { 10, 4, 5, 8, 6, 11, 26 };
+
+		int kPosition = 3;
+		int length = array.length;
+
+		if (kPosition > length) {
+			System.out.println("Index out of bound");
+		}
+		else {
+			// find kth smallest value
+			System.out.println(
+				"K-th smallest element in array : "
+				+ kthSmallest(arraycopy, 0, length - 1,
+							kPosition));
+		}
+	}
+}
+
+
+//Print all permutations of a string in sorted order.
+import java.io.*;
+import java.util.*;
+
+class Solution {
+
+// Calculating factorial of a number
+static int factorial(int n) {
+	int f = 1;
+	for (int i = 1; i <= n; i++)
+	f = f * i;
+	return f;
+}
+
+// Method to print the array
+static void print(char[] temp) {
+	for (int i = 0; i < temp.length; i++)
+	System.out.print(temp[i]);
+	System.out.println();
+}
+
+// Method to find total number of permutations
+static int calculateTotal(char[] temp, int n) {
+	int f = factorial(n);
+
+	// Building HashMap to store frequencies of
+	// all characters.
+	HashMap<Character, Integer> hm =
+					new HashMap<Character, Integer>();
+	for (int i = 0; i < temp.length; i++) {
+	if (hm.containsKey(temp[i]))
+		hm.put(temp[i], hm.get(temp[i]) + 1);
+	else
+		hm.put(temp[i], 1);
+	}
+
+	// Traversing hashmap and finding duplicate elements.
+	for (Map.Entry e : hm.entrySet()) {
+	Integer x = (Integer)e.getValue();
+	if (x > 1) {
+		int temp5 = factorial(x);
+		f = f / temp5;
+	}
+	}
+	return f;
+}
+
+static void nextPermutation(char[] temp) {
+
+	// Start traversing from the end and
+	// find position 'i-1' of the first character
+	// which is greater than its successor.
+	int i;
+	for (i = temp.length - 1; i > 0; i--)
+	if (temp[i] > temp[i - 1])
+		break;
+
+	// Finding smallest character after 'i-1' and
+	// greater than temp[i-1]
+	int min = i;
+	int j, x = temp[i - 1];
+	for (j = i + 1; j < temp.length; j++)
+	if ((temp[j] < temp[min]) && (temp[j] > x))
+		min = j;
+
+	// Swapping the above found characters.
+	char temp_to_swap;
+	temp_to_swap = temp[i - 1];
+	temp[i - 1] = temp[min];
+	temp[min] = temp_to_swap;
+
+	// Sort all digits from position next to 'i-1'
+	// to end of the string.
+	Arrays.sort(temp, i, temp.length);
+
+	// Print the String
+	print(temp);
+}
+
+static void printAllPermutations(String s) {
+
+	// Sorting String
+	char temp[] = s.toCharArray();
+	Arrays.sort(temp);
+
+	// Print first permutation
+	print(temp);
+
+	// Finding the total permutations
+	int total = calculateTotal(temp, temp.length);
+	for (int i = 1; i < total; i++)
+	nextPermutation(temp);
+}
+
+// Driver Code
+public static void main(String[] args) {
+	String s = "AAB";
+	printAllPermutations(s);
+}
+}
+
+
+// Weighted Substring
+import java.util.*;
+
+class GFG{
+
+// Function to find the count of
+// all the subStrings with weight
+// of characters atmost K
+static int distinctSubString(String P, String Q,
+					int K, int N)
+{
+
+	// Hashmap to store all subStrings
+	HashSet<String> S = new HashSet<String>();
+
+	// Iterate over all subStrings
+	for (int i = 0; i < N; ++i) {
+
+		// Maintain the sum of all characters
+		// encountered so far
+		int sum = 0;
+
+		// Maintain the subString till the
+		// current position
+		String s = "";
+
+		for (int j = i; j < N; ++j) {
+
+			// Get the position of the
+			// character in String Q
+			int pos = P.charAt(j) - 'a';
+
+			// Add weight to current sum
+			sum += Q.charAt(pos) - '0';
+
+			// Add current character to subString
+			s += P.charAt(j);
+
+			// If sum of characters is <=K
+			// then insert into the set
+			if (sum <= K) {
+				S.add(s);
+			}
+
+			else {
+				break;
+			}
+		}
+	}
+
+	// Finding the size of the set
+	return S.size();
+}
+
+// Driver code
+public static void main(String[] args)
+{
+	String P = "abcde";
+	String Q = "12345678912345678912345678";
+	int K = 5;
+	int N = P.length();
+
+	System.out.print(distinctSubString(P, Q, K, N));
+}
+}

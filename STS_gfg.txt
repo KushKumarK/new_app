@@ -530,7 +530,7 @@ public class KruskalsMST {
 	}
 }
 
-// Manacher's Algorithm
+// Manacher's Algorithm longest palindromic substring
 import java.util.*;
 
 class GFG

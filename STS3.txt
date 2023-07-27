@@ -1,0 +1,600 @@
+
+// A Java program to demonstrate the working of Chinese remainder
+// Theorem
+import java.io.*;
+
+class GFG {
+	
+	// k is size of num[] and rem[]. Returns the smallest
+	// number x such that:
+	// x % num[0] = rem[0],
+	// x % num[1] = rem[1],
+	// ..................
+	// x % num[k-2] = rem[k-1]
+	// Assumption: Numbers in num[] are pairwise coprime
+	// (gcd for every pair is 1)
+	static int findMinX(int num[], int rem[], int k)
+	{
+		int x = 1; // Initialize result
+	
+		// As per the Chinese remainder theorem,
+		// this loop will always break.
+		while (true)
+		{
+			// Check if remainder of x % num[j] is
+			// rem[j] or not (for all j from 0 to k-1)
+			int j;
+			for (j=0; j<k; j++ )
+				if (x%num[j] != rem[j])
+				break;
+	
+			// If all remainders matched, we found x
+			if (j == k)
+				return x;
+	
+			// Else try next number
+			x++;
+		}
+	
+	}
+	
+	// Driver method
+	public static void main(String args[])
+	{
+		int num[] = {3, 4, 5};
+		int rem[] = {2, 3, 1};
+		int k = num.length;
+		System.out.println("x is " + findMinX(num, rem, k));
+	}
+}
+
+// Java code for Block Swap
+import java.io.*;
+
+public class GFG {
+	static void leftRotate(int arr[], int d, int n)
+	{
+		int i, j;
+		if (d == 0 || d == n)
+			return;
+		/* If number of elements to be rotated is more than
+		* array size*/
+		if (d > n)
+			d = d % n;
+		i = d;
+		j = n - d;
+		while (i != j) {
+			if (i < j) /*A is shorter*/
+			{
+				swap(arr, d - i, d + j - i, i);
+				j -= i;
+			}
+			else /*B is shorter*/
+			{
+				swap(arr, d - i, d, j);
+				i -= j;
+			}
+			// printArray(arr, 7);
+		}
+		/*Finally, block swap A and B*/
+		swap(arr, d - i, d, i);
+	}
+
+	/*UTILITY FUNCTIONS*/
+	/* function to print an array */
+	public static void printArray(int arr[], int size)
+	{
+		int i;
+		for (i = 0; i < size; i++)
+			System.out.print(arr[i] + " ");
+		System.out.println();
+	}
+
+	/*This function swaps d elements
+	starting at index fi with d elements
+	starting at index si */
+	public static void swap(int arr[], int fi, int si,
+							int d)
+	{
+		int i, temp;
+		for (i = 0; i < d; i++) {
+			temp = arr[fi + i];
+			arr[fi + i] = arr[si + i];
+			arr[si + i] = temp;
+		}
+	}
+
+	// Driver Code
+	public static void main(String[] args)
+	{
+		int arr[] = { 1, 2, 3, 4, 5, 6, 7 };
+		leftRotate(arr, 2, 7);
+		printArray(arr, 7);
+	}
+}
+
+// Java program to demonstrate Basic Euclidean Algorithm
+
+import java.lang.*;
+import java.util.*;
+
+class GFG {
+	// extended Euclidean Algorithm
+	public static int gcd(int a, int b)
+	{
+		if (a == 0)
+			return b;
+
+		return gcd(b % a, a);
+	}
+
+	// Driver code
+	public static void main(String[] args)
+	{
+		int a = 10, b = 15, g;
+	
+		// Function call
+		g = gcd(a, b);
+		System.out.println("GCD(" + a + " , " + b
+						+ ") = " + g);
+
+		a = 35;
+		b = 10;
+		g = gcd(a, b);
+		System.out.println("GCD(" + a + " , " + b
+						+ ") = " + g);
+
+		a = 31;
+		b = 2;
+		g = gcd(a, b);
+		System.out.println("GCD(" + a + " , " + b
+						+ ") = " + g);
+	}
+}
+
+//Karatsuba Algorithm
+import java.math.BigInteger;
+import java.util.Scanner;
+
+public class KaratsubaAlgorithm {
+    public static BigInteger karatsuba(BigInteger x, BigInteger y) {
+        int n = Math.max(x.bitLength(), y.bitLength());
+        // Base case: If numbers are small, use regular multiplication
+        if (n <= 2000) {
+            return x.multiply(y);
+        }
+
+        // Split the input numbers into two halves
+        int half = (n + 32) / 64 * 32; // Round up to multiple of 32 to avoid overflow
+        BigInteger mask = BigInteger.ONE.shiftLeft(half).subtract(BigInteger.ONE);
+        BigInteger xlow = x.and(mask);
+        BigInteger ylow = y.and(mask);
+        BigInteger xhigh = x.shiftRight(half);
+        BigInteger yhigh = y.shiftRight(half);
+
+        // Recursively compute the three intermediate products
+        BigInteger a = karatsuba(xhigh, yhigh);
+        BigInteger b = karatsuba(xlow.add(xhigh), ylow.add(yhigh));
+        BigInteger c = karatsuba(xlow, ylow);
+
+        // Combine the three intermediate products to get the final result
+        BigInteger ab = a.shiftLeft(half * 2);
+        BigInteger adbc = b.subtract(a).subtract(c).shiftLeft(half);
+        return ab.add(adbc).add(c);
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter the first number: ");
+        BigInteger x = scanner.nextBigInteger();
+
+        System.out.print("Enter the second number: ");
+        BigInteger y = scanner.nextBigInteger();
+
+        scanner.close();
+
+        BigInteger result = karatsuba(x, y);
+        System.out.println("Multiplication result: " + result);
+    }
+}
+
+//Leaders in an array
+import java.util.ArrayList;
+import java.util.List;
+
+public class LeadersInArray {
+    public static List<Integer> findLeaders(int[] arr) {
+        List<Integer> leaders = new ArrayList<>();
+        if (arr.length == 0) {
+            return leaders;
+        }
+
+        int currentLeader = arr[arr.length - 1];
+        leaders.add(currentLeader);
+
+        for (int i = arr.length - 2; i >= 0; i--) {
+            if (arr[i] > currentLeader) {
+                currentLeader = arr[i];
+                leaders.add(currentLeader);
+            }
+        }
+
+        return leaders;
+    }
+
+    public static void main(String[] args) {
+        int[] arr = {16, 17, 4, 3, 5, 2};
+
+        List<Integer> leaders = findLeaders(arr);
+
+        System.out.println("Leaders in the array: " + leaders);
+    }
+}
+
+//Lexicographically first string
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class LexicographicallyFirstPalindrome {
+    public static String getLexicographicallyFirstPalindrome(String input) {
+        // Convert the input string to a character array and sort it
+        char[] chars = input.toCharArray();
+        Arrays.sort(chars);
+
+        // Create two strings - one for the left half and one for the right half of the palindrome
+        StringBuilder left = new StringBuilder();
+        StringBuilder right = new StringBuilder();
+
+        // If the length of the input is odd, the middle character will be used only once
+        // So, we add it to the left half and skip it in the right half
+        int middleIndex = -1;
+        if (chars.length % 2 != 0) {
+            middleIndex = chars.length / 2;
+            left.append(chars[middleIndex]);
+        }
+
+        // Construct the left and right halves of the palindrome
+        for (int i = 0; i < chars.length / 2; i++) {
+            left.append(chars[i]);
+            right.insert(0, chars[chars.length - 1 - i]);
+        }
+
+        // Combine left and right halves to form the final palindrome
+        StringBuilder palindrome = left.append(right);
+
+        return palindrome.toString();
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter the input string: ");
+        String input = scanner.nextLine();
+
+        scanner.close();
+
+        String palindrome = getLexicographicallyFirstPalindrome(input);
+        System.out.println("Lexicographically first palindrome: " + palindrome);
+    }
+}
+
+//Longest subsequence of 1s with flip
+import java.util.Scanner;
+
+public class LongestSubarrayWithOnesAfterReplacement {
+    private static int findMaxConsecutiveOnes(int[] a, int k) {
+        int maxOnes = 0;
+        int numReplacements = 0;
+        int windowStart = 0;
+
+        for (int windowEnd = 0; windowEnd < a.length; windowEnd++) {
+            if (a[windowEnd] == 0) {
+                numReplacements++;
+            }
+
+            // If the number of replacements exceeds k, shrink the window from the left
+            while (numReplacements > k) {
+                if (a[windowStart] == 0) {
+                    numReplacements--;
+                }
+                windowStart++;
+            }
+
+            // Update the maximum length of consecutive ones in the window
+            maxOnes = Math.max(maxOnes, windowEnd - windowStart + 1);
+        }
+
+        return maxOnes;
+    }
+
+    public static void main(String[] args) {
+        int[] a = {1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0};
+        int k = 1;
+        int result = findMaxConsecutiveOnes(a, k);
+        System.out.printf("Length of longest contiguous subarray containing only 1s after replacement = %d%n", result);
+    }
+}
+
+// Java program to find maximum consecutive
+// 1's in binary representation of a number
+// after flipping one bit.
+
+class GFG
+{
+
+	static int flipBit(int a)
+	{
+		/* If all bits are l, binary representation
+		of 'a' has all 1s */
+		if (~a == 0)
+		{
+			return 8 * sizeof();
+		}
+
+		int currLen = 0, prevLen = 0, maxLen = 0;
+		while (a != 0)
+		{
+			// If Current bit is a 1
+			// then increment currLen++
+			if ((a & 1) == 1)
+			{
+				currLen++;
+			}
+			
+			// If Current bit is a 0 then
+			// check next bit of a
+			else if ((a & 1) == 0)
+			{
+				/* Update prevLen to 0 (if next bit is 0)
+				or currLen (if next bit is 1). */
+				prevLen = (a & 2) == 0 ? 0 : currLen;
+
+				// If two consecutively bits are 0
+				// then currLen also will be 0.
+				currLen = 0;
+			}
+
+			// Update maxLen if required
+			maxLen = Math.max(prevLen + currLen, maxLen);
+
+			// Remove last bit (Right shift)
+			a >>= 1;
+		}
+
+		// We can always have a sequence of
+		// at least one 1, this is flipped bit
+		return maxLen + 1;
+	}
+
+	static byte sizeof()
+	{
+		byte sizeOfInteger = 8;
+		return sizeOfInteger;
+	}
+	
+	// Driver code
+	public static void main(String[] args)
+	{
+		// input 1
+		System.out.println(flipBit(13));
+
+		// input 2
+		System.out.println(flipBit(1775));
+
+		// input 3
+		System.out.println(flipBit(15));
+	}
+}
+
+// Program for finding out majority element in an array 
+
+class MajorityElement {
+	/* Function to print Majority Element */
+	void printMajority(int a[], int size)
+	{
+		/* Find the candidate for Majority*/
+		int cand = findCandidate(a, size);
+
+		/* Print the candidate if it is Majority*/
+		if (isMajority(a, size, cand))
+			System.out.println(" " + cand + " ");
+		else
+			System.out.println("No Majority Element");
+	}
+
+	/* Function to find the candidate for Majority */
+	int findCandidate(int a[], int size)
+	{
+		int maj_index = 0, count = 1;
+		int i;
+		for (i = 1; i < size; i++) {
+			if (a[maj_index] == a[i])
+				count++;
+			else
+				count--;
+			if (count == 0) {
+				maj_index = i;
+				count = 1;
+			}
+		}
+		return a[maj_index];
+	}
+
+	/* Function to check if the candidate occurs more
+	than n/2 times */
+	boolean isMajority(int a[], int size, int cand)
+	{
+		int i, count = 0;
+		for (i = 0; i < size; i++) {
+			if (a[i] == cand)
+				count++;
+		}
+		if (count > size / 2)
+			return true;
+		else
+			return false;
+	}
+
+	/* Driver code */
+	public static void main(String[] args)
+	{
+		MajorityElement majorelement
+			= new MajorityElement();
+		int a[] = new int[] { 1, 3, 3, 1, 2 };
+		
+		// Function call
+		int size = a.length;
+		majorelement.printMajority(a, size);
+	}
+}
+
+
+// Java program to find maximum product subarray
+import java.io.*;
+
+class GFG {
+	/* Returns the product of max product subarray.*/
+	static int maxSubarrayProduct(int arr[])
+	{
+		// Initializing result
+		int result = arr[0];
+		int n = arr.length;
+
+		for (int i = 0; i < n; i++) {
+			int mul = arr[i];
+			// traversing in current subarray
+			for (int j = i + 1; j < n; j++) {
+				// updating result every time to keep an eye
+				// over the maximum product
+				result = Math.max(result, mul);
+				mul *= arr[j];
+			}
+			// updating the result for (n-1)th index.
+			result = Math.max(result, mul);
+		}
+		return result;
+	}
+
+	// Driver Code
+	public static void main(String[] args)
+	{
+		int arr[] = { 1, -2, -3, 0, 7, -8, -2 };
+		System.out.println("Maximum Sub array product is "
+						+ maxSubarrayProduct(arr));
+	}
+}
+
+// java program to find maximum
+// equilibrium sum.
+import java.io.*;
+
+class GFG {
+	
+	// Function to find maximum
+	// equilibrium sum.
+	static int findMaxSum(int []arr, int n)
+	{
+		int res = Integer.MIN_VALUE;
+		
+		for (int i = 0; i < n; i++)
+		{
+			int prefix_sum = arr[i];
+			
+			for (int j = 0; j < i; j++)
+				prefix_sum += arr[j];
+		
+			int suffix_sum = arr[i];
+			
+			for (int j = n - 1; j > i; j--)
+				suffix_sum += arr[j];
+		
+			if (prefix_sum == suffix_sum)
+				res = Math.max(res, prefix_sum);
+		}
+		
+		return res;
+	}
+	
+	// Driver Code
+	public static void main (String[] args)
+	{
+		int arr[] = {-2, 5, 3, 1, 2, 6, -4, 2 };
+		int n = arr.length;
+		System.out.println(findMaxSum(arr, n));
+	}
+}
+
+// Java program to find maximum
+// sum of hour glass in matrix
+import java.io.*;
+
+class GFG {
+	
+static int R = 5;
+static int C = 5;
+
+// Returns maximum sum of
+// hour glass in ar[][]
+static int findMaxSum(int [][]mat)
+{
+	if (R < 3 || C < 3){
+		System.out.println("Not possible");
+		System.exit(0);
+	}
+
+	// Here loop runs (R-2)*(C-2)
+	// times considering different
+	// top left cells of hour glasses.
+	int max_sum = Integer.MIN_VALUE;
+	for (int i = 0; i < R - 2; i++)
+	{
+		for (int j = 0; j < C - 2; j++)
+		{
+			// Considering mat[i][j] as top
+			// left cell of hour glass.
+			int sum = (mat[i][j] + mat[i][j + 1] +
+					mat[i][j + 2]) + (mat[i + 1][j + 1]) +
+					(mat[i + 2][j] + mat[i + 2][j + 1] +
+					mat[i + 2][j + 2]);
+
+			// If previous sum is less than
+			// current sum then update
+			// new sum in max_sum
+			max_sum = Math.max(max_sum, sum);
+		}
+	}
+	return max_sum;
+}
+
+	// Driver code
+	static public void main (String[] args)
+	{
+		int [][]mat = {{1, 2, 3, 0, 0},
+					{0, 0, 0, 0, 0},
+					{2, 1, 4, 0, 0},
+					{0, 0, 0, 0, 0},
+					{1, 1, 0, 1, 0}};
+		int res = findMaxSum(mat);
+		System.out.println("Maximum sum of hour glass = "+ res);
+	}
+	
+}
+
+// Java program to swap two
+// nibbles in a byte
+
+class GFG {
+	
+static int swapNibbles(int x)
+{
+	return ((x & 0x0F) << 4 | (x & 0xF0) >> 4);
+}
+
+// Driver code
+public static void main(String arg[])
+{
+	int x = 100;
+	System.out.print(swapNibbles(x));
+}
+}
